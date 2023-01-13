@@ -95,3 +95,38 @@ func SelectAdvertisement() *sql.Rows {
 
 	return rows
 }
+
+func GetEmail(tableName string) []string {
+	db := ConnectDB()
+	defer db.Close()
+
+	rows, err := db.Query(fmt.Sprintf("SELECT email FROM \"%s\";", tableName))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	emails := make([]string, 0)
+
+	for rows.Next() {
+		var email string
+
+		if err := rows.Scan(&email); err != nil {
+			log.Fatal(err)
+		}
+
+		emails = append(emails, email)
+	}
+
+	return emails
+}
+
+func UpdateSale(id, name, currency, price, link string) {
+	db := ConnectDB()
+	defer db.Close()
+
+	requestData := "UPDATE advertisement SET name = $1, currency = $2, price = $3, link = $4 WHERE ad_id = $5;"
+
+	if _, err := db.Exec(requestData, name, currency, price, link, id); err != nil {
+		fmt.Println(err)
+	}
+}

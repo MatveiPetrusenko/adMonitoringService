@@ -54,6 +54,10 @@ func main() {
 			oldData := <-oldDataStream
 			newData := <-newDataStream
 
+			smtpHost, smtpPort, auth, from, to, message := handler.PrepareMessage(oldData, newData)
+			handler.SendMessage(smtpHost, smtpPort, auth, from, to, message)
+
+			handler.UpdateAdvertisement(newData)
 		}
 	}()
 

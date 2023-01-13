@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"log"
+	"net/smtp"
 
 	"main.go/dataBase"
 	"main.go/scraper"
@@ -76,5 +77,39 @@ func MonitorChanges() (OldData, scraper.Data, bool) {
 	return oldData, scraper.Data{}, result
 }
 
-//newData.ID == OldData.ID && newData.Name == OldData.Name && newData.Currency == currency && newData.Price == price && newData.Link == link
-//var adID, name, currency, price, link string
+func PrepareMessage(oldData OldData, newData scraper.Data) (string, string, smtp.Auth, string, []string, []byte) {
+	// Sender data
+	// General Email
+	from := "from@gmail.com"
+	password := "<Email Password>"
+
+	// Receiver email address.
+	to := dataBase.GetEmail(oldData.ID)
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Message.
+	message := []byte("This is a test email message.")
+
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	return smtpHost, smtpPort, auth, from, to, message
+
+}
+
+func SendMessage(smtpHost, smtpPort string, auth smtp.Auth, from string, to []string, message []byte) {
+	// Sending email.
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Email Sent Successfully!")
+}
+
+func UpdateAdvertisement(newData scraper.Data) {
+	dataBase.UpdateSale(newData.ID, newData.Name, newData.Currency, newData.Price, newData.Link)
+}
