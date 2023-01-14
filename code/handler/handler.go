@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"os"
+	"strings"
 
 	"main.go/dataBase"
 	"main.go/scraper"
@@ -15,6 +17,24 @@ type OldData struct {
 	Currency string
 	Price    string
 	Link     string
+}
+
+func ReadInputLink(link string) string {
+	fmt.Scan(&link)
+	return link
+}
+
+func CheckInputLink(link string) bool {
+	return strings.Contains(link, "www.ebay.com/itm/")
+}
+
+func ReadInputEmail(eMail string) string {
+	fmt.Scan(&eMail)
+	return eMail
+}
+
+func CheckInputEmail(eMail string) bool {
+	return strings.Contains(eMail, "@")
 }
 
 func NewScraper() *scraper.Scrapper {
@@ -79,19 +99,19 @@ func MonitorChanges() (OldData, scraper.Data, bool) {
 
 func PrepareMessage(oldData OldData, newData scraper.Data) (string, string, smtp.Auth, string, []string, []byte) {
 	// Sender data
-	// General Email
-	from := "from@gmail.com"
-	password := "<Email Password>"
+	// Host Email
+	from := os.Getenv("HOSTEMAIL")
+	password := os.Getenv("HOSTPASSWORD")
 
 	// Receiver email address.
 	to := dataBase.GetEmail(oldData.ID)
 
 	// smtp server configuration.
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	smtpHost := os.Getenv("HOST")
+	smtpPort := os.Getenv("PORT")
 
 	// Message.
-	message := []byte("This is a test email message.")
+	message := []byte("Subject: Notification\r\n" + "\r\n" + "Price" + "\r\n" + " Was:" + string(oldData.Price) + "\r\n" + "Become:" + string(newData.Price) + "\r\n")
 
 	// Authentication.
 	auth := smtp.PlainAuth("", from, password, smtpHost)

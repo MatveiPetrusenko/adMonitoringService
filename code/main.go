@@ -20,7 +20,22 @@ func main() {
 		s := handler.NewScraper()
 		for {
 			var link, eMail string
-			fmt.Scan(&link, &eMail)
+
+			//
+			link = handler.ReadInputLink(link)
+			resultLink := handler.CheckInputLink(link)
+			if !resultLink {
+				fmt.Println("Incorrect input link")
+				continue
+			}
+
+			//
+			eMail = handler.ReadInputEmail(eMail)
+			resultEmail := handler.CheckInputEmail(eMail)
+			if !resultEmail {
+				fmt.Println("Incorrect input Email")
+				continue
+			}
 
 			data, _ := s.Visit(link)
 			// todo: handling error

@@ -23,6 +23,7 @@ type Scrapper struct {
 	parseError error
 }
 
+// parseUrl getting advertising ID from link
 func (data *Data) parseUrl(link string) {
 	base := path.Base(link)
 
