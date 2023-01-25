@@ -88,11 +88,6 @@ func MonitorChanges() (OldData, scraper.Data, bool) {
 }
 
 func PrepareMessage(oldData OldData, newData scraper.Data) (string, string, smtp.Auth, string, []string, []byte) {
-	/*os.Setenv("HOSTEMAIL", "mat1testbot@gmail.com")
-	os.Setenv("HOSTPASSWORD", "klerpskmcjiefatg")
-	os.Setenv("HOST", "smtp.gmail.com")
-	os.Setenv("PORT", "587")*/
-
 	// Sender data
 	// Host Email
 	from := os.Getenv("HOSTEMAIL")

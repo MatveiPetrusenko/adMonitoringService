@@ -8,8 +8,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//var connStr = "host=postgres port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
-
 // ConnectDB represent connecting to Postgresql Database
 func ConnectDB() *sql.DB {
 	postgresInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
