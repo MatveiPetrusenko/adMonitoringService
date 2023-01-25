@@ -49,6 +49,10 @@ func (data *Data) addLink(link string) {
 	data.Link = link
 }
 
+func (data *Data) setName(name string) {
+	data.Name = strings.Trim(name, "—")
+}
+
 func NewScrapper() *Scrapper {
 	c := colly.NewCollector()
 	sc := &Scrapper{
@@ -71,7 +75,7 @@ func NewScrapper() *Scrapper {
 		price := htmlElement.ChildText("div.x-price-primary")
 		// todo Price not empty, if not => set parseErr
 		name := htmlElement.ChildText("h1.x-item-title__mainTitle")
-		sc.data.Name = name
+		sc.data.setName(name)
 		sc.data.setPrice(price)
 	})
 

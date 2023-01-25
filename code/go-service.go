@@ -4,14 +4,26 @@ import (
 	"fmt"
 	"sync"
 
+	"main.go/http"
+
 	"main.go/scraper"
 
 	"main.go/handler"
 )
 
 func main() {
+	fmt.Println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
 	var sync sync.WaitGroup
-	sync.Add(3)
+	sync.Add(4)
+
+	//
+	go func() {
+		defer sync.Done()
+
+		for {
+			http.HandleRequests()
+		}
+	}()
 
 	//
 	go func() {
@@ -19,28 +31,15 @@ func main() {
 
 		s := handler.NewScraper()
 		for {
-			var link, eMail string
-
-			//
-			link = handler.ReadInputLink(link)
-			resultLink := handler.CheckInputLink(link)
-			if !resultLink {
-				fmt.Println("Incorrect input link")
+			requestData := <-http.RequestDataStream
+			if requestData.Link == "" && requestData.Email == "" {
 				continue
 			}
 
-			//
-			eMail = handler.ReadInputEmail(eMail)
-			resultEmail := handler.CheckInputEmail(eMail)
-			if !resultEmail {
-				fmt.Println("Incorrect input Email")
-				continue
-			}
-
-			data, _ := s.Visit(link)
+			data, _ := s.Visit(requestData.Link)
 			// todo: handling error
 
-			handler.CheckExist(data, eMail)
+			handler.CheckExist(data, requestData.Email)
 		}
 	}()
 

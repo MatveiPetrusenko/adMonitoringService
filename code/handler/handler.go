@@ -19,18 +19,8 @@ type OldData struct {
 	Link     string
 }
 
-func ReadInputLink(link string) string {
-	fmt.Scan(&link)
-	return link
-}
-
 func CheckInputLink(link string) bool {
 	return strings.Contains(link, "www.ebay.com/itm/")
-}
-
-func ReadInputEmail(eMail string) string {
-	fmt.Scan(&eMail)
-	return eMail
 }
 
 func CheckInputEmail(eMail string) bool {
@@ -98,6 +88,11 @@ func MonitorChanges() (OldData, scraper.Data, bool) {
 }
 
 func PrepareMessage(oldData OldData, newData scraper.Data) (string, string, smtp.Auth, string, []string, []byte) {
+	/*os.Setenv("HOSTEMAIL", "mat1testbot@gmail.com")
+	os.Setenv("HOSTPASSWORD", "klerpskmcjiefatg")
+	os.Setenv("HOST", "smtp.gmail.com")
+	os.Setenv("PORT", "587")*/
+
 	// Sender data
 	// Host Email
 	from := os.Getenv("HOSTEMAIL")

@@ -1,0 +1,38 @@
+version: '3.8'
+
+networks:
+  network:
+    driver: bridge
+
+services:
+  go-service:
+    build: ./code
+    container_name: go-service
+    ports:
+      - "8080:8080"
+    environment:
+       HOSTEMAIL: "${HOSTEMAIL}"
+       HOSTPASSWORD: "${HOSTPASSWORD}"
+       HOST: "${HOST}"
+       PORT: "${PORT}"
+    depends_on:
+      - postgresdb
+    restart: always
+    networks:
+      - network
+
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+       POSTGRES_USER: "${POSTGRES_USER}"
+       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+       POSTGRES_DB: "${POSTGRES_DB}"
+    restart: always
+    networks:
+    - network
