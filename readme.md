@@ -7,8 +7,17 @@ Provides an opportunity to subscribe on sales ads to track changes in the price 
   <li>ebay.com</li>
 </ul>
 
+App works on port ```8080```
+<br>Receive requests by POST-method in JSON format
+```bash
+{
+    "link": "https://www.ebay.com/itm/some_id",
+    "email": "smt@smt.com"
+}
+```
+
 ## Getting Started
-Set environment variable in file .env
+Set environment variable in file ```.env```
 <ins><br>go-service</ins>
 <ul>
  <li>HOSTEMAIL</li>
@@ -28,6 +37,10 @@ Than move to /docker-compose folder and run:
 ```bash
 [sudo] docker-compose up --build
 ```
+<br>Send request POST-method by Postman
+
+```http://localhost:8080/subscrution``` + JSON Raw data
+
 ## Gmail Account
 If you use Gmail for sending notification, you can get error as below
 >535-5.7.8 Username and Password not accepted
