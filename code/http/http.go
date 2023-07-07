@@ -16,14 +16,14 @@ type requestData struct {
 }
 
 func HandleRequests() {
-	http.HandleFunc("/subscrution", subscrution)
+	http.HandleFunc("/subscription", subscription)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func subscrution(writer http.ResponseWriter, request *http.Request) {
+func subscription(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	var data requestData
@@ -37,7 +37,12 @@ func subscrution(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 
-	if !handler.CheckInputLink(data.Link) || !handler.CheckInputEmail(data.Email) {
+	errEmail := handler.CheckInputEmail(data.Email)
+	if errEmail != nil {
+		log.Fatalln(errEmail)
+	}
+
+	if !handler.CheckInputLink(data.Link) {
 		return
 	}
 

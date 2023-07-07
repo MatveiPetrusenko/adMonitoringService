@@ -4,8 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"net/url"
 	"os"
 	"strings"
+
+	"github.com/go-ozzo/ozzo-validation/is"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 
 	"main.go/dataBase"
 	"main.go/scraper"
@@ -19,12 +24,33 @@ type OldData struct {
 	Link     string
 }
 
-func CheckInputLink(link string) bool {
-	return strings.Contains(link, "www.ebay.com/itm/")
+func CheckInputLink(link string) error {
+	parsedURL, err := url.Parse(link)
+	if err != nil {
+		fmt.Println("Failed to parse URL:", err)
+		return err
+	}
+
+	urlWithoutPath := fmt.Sprintf("%s://%s", parsedURL.Scheme, parsedURL.Host)
+
+	urlValidation := validation.NewStringRule(func(value string) bool {
+		return strings.HasPrefix(link, value)
+	}, "must start with the specified URL")
+
+	err = validation.Validate(urlWithoutPath, urlValidation)
+	if err != nil {
+		fmt.Println("URL validation error:", err)
+		return err
+	} else {
+		fmt.Println("URL is valid")
+		return nil
+	}
+
+	//return strings.Contains(link, "www.ebay.com/itm/")
 }
 
-func CheckInputEmail(eMail string) bool {
-	return strings.Contains(eMail, "@")
+func CheckInputEmail(eMail string) error {
+	return validation.Validate(&eMail, validation.Required, is.Email)
 }
 
 func NewScraper() *scraper.Scrapper {

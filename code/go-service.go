@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 
 	"main.go/http"
@@ -12,7 +11,6 @@ import (
 )
 
 func main() {
-	fmt.Println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
 	var sync sync.WaitGroup
 	sync.Add(4)
 
